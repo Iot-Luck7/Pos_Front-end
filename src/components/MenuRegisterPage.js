@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "../css/MenuRegisterPage.css"; // ✅ 스타일 분리
 
 const MenuRegisterPage = () => {
   const { businessId } = useParams();
@@ -7,7 +8,7 @@ const MenuRegisterPage = () => {
   const [imageFile, setImageFile] = useState(null);
 
   const [menuData, setMenuData] = useState({
-    menuName: "", // ← 여기만 name → menuName 으로 변경!
+    menuName: "",
     category: "",
     price: 0,
     calorie: 0,
@@ -20,12 +21,36 @@ const MenuRegisterPage = () => {
     setImageFile(e.target.files[0]);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setMenuData((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const uploadImageToCloudinary = async () => {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "menu_image");
+    formData.append("cloud_name", "dfb4meubq");
+
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/dfb4meubq/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const data = await response.json();
+    return data.secure_url;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       let imageUrl = "";
 
-      // 이미지가 선택되었다면 Cloudinary에 업로드
       if (imageFile) {
         imageUrl = await uploadImageToCloudinary();
       }
@@ -44,9 +69,7 @@ const MenuRegisterPage = () => {
         }
       );
 
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
+      if (!response.ok) throw new Error(await response.text());
 
       const { message } = await response.json();
       alert(message);
@@ -56,35 +79,11 @@ const MenuRegisterPage = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setMenuData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const uploadImageToCloudinary = async () => {
-    const formData = new FormData();
-    formData.append("file", imageFile);
-    formData.append("upload_preset", "menu_image"); // Cloudinary preset 이름
-    formData.append("cloud_name", "dfb4meubq");
-
-    const response = await fetch(
-      "https://api.cloudinary.com/v1_1/dfb4meubq/image/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-    const data = await response.json();
-    return data.secure_url;
-  };
-
   return (
-    <div>
-      <h2>메뉴 등록</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="register-container">
+      <form className="register-form" onSubmit={handleSubmit}>
+        <h2>메뉴 등록</h2>
+
         <input
           type="text"
           name="menuName"
@@ -122,14 +121,14 @@ const MenuRegisterPage = () => {
           value={menuData.ingredients}
           onChange={handleInputChange}
         />
-        <label>
-          다이어트용:
+        <label className="checkbox">
           <input
             type="checkbox"
             name="dietYn"
             checked={menuData.dietYn}
             onChange={handleInputChange}
           />
+          다이어트용
         </label>
         <input type="file" accept="image/*" onChange={handleImageChange} />
         <button type="submit">등록</button>

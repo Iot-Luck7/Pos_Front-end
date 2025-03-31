@@ -1,0 +1,59 @@
+/* MenuRegisterPage.css */
+.register-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .register-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px; /* ✅ 넓은 화면에서는 이만큼까지만 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  .register-form h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .register-form input[type="text"],
+  .register-form input[type="number"],
+  .register-form input[type="file"] {
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  .register-form .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .register-form button {
+    padding: 0.8rem;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .register-form button:hover {
+    background-color: #0056b3;
+  }
+  
