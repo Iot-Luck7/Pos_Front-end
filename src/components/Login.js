@@ -24,7 +24,6 @@ const Login = () => {
       localStorage.setItem("businessId", result.businessId);
       localStorage.setItem("businessType", result.businessType);
 
-      alert(result.message);
       window.location.href = `/menu/${result.posId}`; // 메뉴 페이지로 이동
     } catch (error) {
       console.error("❌ 로그인 실패:", error);
@@ -34,7 +33,6 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
       <LoginForm onSubmit={handleLogin} />
       {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
