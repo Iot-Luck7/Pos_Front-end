@@ -43,7 +43,16 @@ const MenuPage = () => {
       <ul>
         {menus.map((menu) => (
           <li key={menu.menuId}>
-            {menu.menuName} - {menu.price}원
+            {menu.imageUrl && (
+              <img
+                src={menu.imageUrl}
+                alt={menu.menuName}
+                style={{ width: "100px", height: "100px", objectFit: "cover" }}
+              />
+            )}
+            <div>
+              {menu.menuName} - {menu.price}원
+            </div>
           </li>
         ))}
       </ul>
