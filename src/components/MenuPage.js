@@ -247,14 +247,14 @@ const MenuPage = () => {
                   onChange={(e) => setNewImageFile(e.target.files[0])}
                 />
               </label>
-              <div style={{ marginTop: "1rem" }}>
+              <div className="modal-actions">
                 <button type="submit" className="close-btn">
                   수정 저장
                 </button>
                 <button
                   type="button"
                   className="close-btn"
-                  style={{ marginLeft: "10px", background: "#999" }}
+                  style={{ background: "#999" }}
                   onClick={() => setSelectedMenu(null)}
                 >
                   닫기
