@@ -57,3 +57,49 @@
     background-color: #0056b3;
   }
   
+  .ingredient-input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .ingredient-input-group input {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .add-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    background-color: #1e1e1e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .ingredient-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .ingredient-item {
+    background-color: #e0e0e0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  
+  .ingredient-item button {
+    background: transparent;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  

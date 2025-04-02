@@ -5,7 +5,7 @@ import "../css/MenuPage.css";
 const MenuPage = () => {
   const { posId } = useParams();
   const [menus, setMenus] = useState([]);
-  const [selectedMenu, setSelectedMenu] = useState(null); // ✅ 모달용 상태
+  const [selectedMenu, setSelectedMenu] = useState(null);
   const [newImageFile, setNewImageFile] = useState(null);
   const navigate = useNavigate();
 
@@ -15,26 +15,6 @@ const MenuPage = () => {
   useEffect(() => {
     fetchMenus();
   }, [posId]);
-
-  const uploadImageToCloudinary = async () => {
-    if (!newImageFile) return selectedMenu.imageUrl;
-
-    const formData = new FormData();
-    formData.append("file", newImageFile);
-    formData.append("upload_preset", "menu_image");
-    formData.append("cloud_name", "dfb4meubq");
-
-    const res = await fetch(
-      "https://api.cloudinary.com/v1_1/dfb4meubq/image/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    const data = await res.json();
-    return data.secure_url;
-  };
 
   const fetchMenus = async () => {
     try {
@@ -70,9 +50,29 @@ const MenuPage = () => {
     }
   };
 
+  const uploadImageToCloudinary = async () => {
+    if (!newImageFile) return selectedMenu.imageUrl;
+
+    const formData = new FormData();
+    formData.append("file", newImageFile);
+    formData.append("upload_preset", "menu_image");
+    formData.append("cloud_name", "dfb4meubq");
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dfb4meubq/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+    return data.secure_url;
+  };
+
   return (
     <div className="menu-container">
-      <h2>POS ID {posId}의 메뉴 목록</h2>
+      <h2>POS ID {posId}의 메뉴</h2>
 
       {(businessType === "본점" || businessType === "개인") && (
         <button className="register-btn" onClick={handleMenuRegister}>
@@ -80,28 +80,21 @@ const MenuPage = () => {
         </button>
       )}
 
-      <div className="menu-list">
-        {menus.map((menu) => (
-          <div
-            className="menu-card"
-            key={menu.menuId}
-            onClick={() => setSelectedMenu(menu)} // ✅ 클릭 시 모달 열기
-          >
-            {menu.imageUrl && (
-              <img
-                className="menu-img"
-                src={menu.imageUrl}
-                alt={menu.menuName}
-              />
-            )}
-            <div className="menu-info">
-              <strong>{menu.menuName}</strong>
-              <p>{menu.price.toLocaleString()}원</p>
+      <div className="menu-grid">
+        <div className="menu-row">
+          {menus.map((menu) => (
+            <div
+              key={menu.menuId}
+              className="menu-box"
+              onClick={() => setSelectedMenu(menu)}
+            >
+              <div className="menu-name">{menu.menuName}</div>
+              <div className="menu-price">{menu.price.toLocaleString()}원</div>
               {(businessType === "본점" || businessType === "개인") && (
                 <button
                   className="delete-btn"
                   onClick={(e) => {
-                    e.stopPropagation(); // ✅ 모달 안 뜨게 막음
+                    e.stopPropagation();
                     handleDelete(menu.menuId);
                   }}
                 >
@@ -109,11 +102,11 @@ const MenuPage = () => {
                 </button>
               )}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {/* ✅ 상세 정보 모달 */}
+      {/* 모달 */}
       {selectedMenu && (
         <div className="modal-overlay" onClick={() => setSelectedMenu(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -126,7 +119,6 @@ const MenuPage = () => {
               />
             )}
 
-            {/* ✅ 수정 form */}
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -147,7 +139,7 @@ const MenuPage = () => {
                         calorie: selectedMenu.calorie,
                         ingredients: selectedMenu.ingredients,
                         dietYn: selectedMenu.dietYn === "Y",
-                        imageUrl: uploadedUrl, // ✅ 새 이미지 URL
+                        imageUrl: uploadedUrl,
                       }),
                     }
                   );

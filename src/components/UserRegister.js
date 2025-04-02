@@ -37,7 +37,7 @@ const UserRegister = () => {
       if (data.addresses.length > 0) {
         setAddressResults(
           data.addresses.map((item) => ({
-            address_name: item.roadAddress || item.jibunAddress, // 도로명 주소 우선
+            address_name: item.roadAddress || item.jibunAddress,
             lat: item.y,
             lng: item.x,
           }))
@@ -51,7 +51,6 @@ const UserRegister = () => {
     }
   };
 
-  // 주소 입력 핸들러
   const handleQueryChange = (e) => {
     const value = e.target.value;
     setQuery(value);
@@ -63,7 +62,6 @@ const UserRegister = () => {
     }
   };
 
-  // 주소 선택 시 적용
   const handleSelectAddress = (address, locationData) => {
     console.log("📍 선택한 주소:", address);
     setLocation(address);
@@ -73,7 +71,6 @@ const UserRegister = () => {
     setAddressResults([]);
   };
 
-  // 유저 등록 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -104,101 +101,113 @@ const UserRegister = () => {
         body: JSON.stringify(data),
       });
 
-      // 응답이 실패(400 Bad Request 등)일 경우
       if (!response.ok) {
-        const errorData = await response.json(); // 서버에서 보낸 오류 메시지를 JSON으로 읽기
+        const errorData = await response.json();
         throw new Error(errorData.error || "등록 실패");
       }
 
-      const result = await response.json(); // 성공 응답 JSON 파싱
-      setMessage(result.message); // 성공 메시지 표시
+      const result = await response.json();
+      setMessage(result.message);
       console.log("✅ 서버 응답:", result);
     } catch (error) {
       console.error("❌ 유저 등록 실패:", error);
-      setMessage("유저 등록 실패: " + error.message); // 오류 메시지를 화면에 표시
+      setMessage("유저 등록 실패: " + error.message);
     }
   };
 
   return (
     <div className="register-container">
-      <h2>유저 등록</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>사업자 유형:</label>
-          <select
-            value={businessType}
-            onChange={(e) => setBusinessType(e.target.value)}
-          >
-            <option value="본점">본점</option>
-            <option value="가맹점">가맹점</option>
-            <option value="개인">개인</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>사업장 이름:</label>
-          <input
-            type="text"
-            value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
-            required
-          />
-        </div>
+      <form className="amazon-form" onSubmit={handleSubmit}>
+        <h2 className="form-title">계정 생성</h2>
 
-        <div className="form-group">
-          <label>위치:</label>
-          <input
-            type="text"
-            value={query}
-            onChange={handleQueryChange}
-            placeholder="도로명 주소를 입력하세요"
-          />
-          <ul className="address-results">
-            {addressResults.map((item, index) => (
-              <li
-                key={index}
-                onClick={() =>
-                  handleSelectAddress(item.address_name, {
-                    lat: item.lat,
-                    lng: item.lng,
-                  })
-                }
-              >
-                {item.address_name}
-              </li>
-            ))}
-          </ul>
-          <input
-            type="text"
-            value={location}
-            readOnly
-            placeholder="선택한 주소"
-          />
-        </div>
+        <label>사업자 유형</label>
+        <select
+          className="form-input"
+          value={businessType}
+          onChange={(e) => setBusinessType(e.target.value)}
+        >
+          <option value="본점">본점</option>
+          <option value="가맹점">가맹점</option>
+          <option value="개인">개인</option>
+        </select>
 
-        <input type="hidden" value={latitude} readOnly />
-        <input type="hidden" value={longitude} readOnly />
+        <label>사업장 이름</label>
+        <input
+          className="form-input"
+          type="text"
+          value={businessName}
+          onChange={(e) => setBusinessName(e.target.value)}
+          required
+        />
 
-        <div className="form-group">
-          <label>이메일 (POS 로그인 ID):</label>
-          <input
-            type="email"
-            value={posLoginId}
-            onChange={(e) => setPosLoginId(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>비밀번호:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">등록하기</button>
+        <label>주소 (도로명)</label>
+        <input
+          className="form-input"
+          type="text"
+          value={query}
+          onChange={handleQueryChange}
+          placeholder="도로명 주소를 입력하세요"
+        />
+        <ul className="address-results">
+          {addressResults.map((item, index) => (
+            <li
+              key={index}
+              onClick={() =>
+                handleSelectAddress(item.address_name, {
+                  lat: item.lat,
+                  lng: item.lng,
+                })
+              }
+            >
+              {item.address_name}
+            </li>
+          ))}
+        </ul>
+        <input
+          className="form-input"
+          type="text"
+          value={location}
+          readOnly
+          placeholder="선택한 주소"
+        />
+
+        <label>이메일 (로그인 ID)</label>
+        <input
+          className="form-input"
+          type="email"
+          value={posLoginId}
+          onChange={(e) => setPosLoginId(e.target.value)}
+          required
+        />
+
+        <label>비밀번호</label>
+        <input
+          className="form-input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button type="submit" className="amazon-btn">
+          계정 생성
+        </button>
+
+        <p className="terms">
+          계속 진행하면 Amazon의 <a href="#">이용약관</a> 및{" "}
+          <a href="#">개인정보 보호정책</a>에 동의하는 것으로 간주됩니다.
+        </p>
+
+        {message && <p className="message">{message}</p>}
+
+        <button
+          type="button"
+          className="amazon-btn"
+          onClick={() => (window.location.href = "/login")}
+        >
+          로그인 화면으로 이동
+        </button>
       </form>
-      <p>{message}</p>
     </div>
   );
 };
