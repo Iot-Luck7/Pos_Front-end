@@ -13,9 +13,18 @@ const MenuRegisterPage = () => {
     menuName: "",
     category: "",
     price: 0,
-    calories: 0,
+    calorie: 0,
     isDiet: false,
     imageUrl: "",
+    description: "",
+  });
+
+  const [errors, setErrors] = useState({
+    menuName: "",
+    category: "",
+    price: "",
+    calorie: "",
+    description: "",
   });
 
   const handleImageChange = (event) => {
@@ -58,14 +67,25 @@ const MenuRegisterPage = () => {
     return data.secure_url;
   };
 
+  const validate = () => {
+    const newErrors = {
+      menuName: menu.menuName.trim() ? "" : "메뉴 이름은 필수입니다.",
+      category: menu.category.trim() ? "" : "카테고리는 필수입니다.",
+      price: menu.price > 0 ? "" : "가격은 0보다 커야 합니다.",
+      calorie: menu.calorie > 0 ? "" : "칼로리는 0보다 커야 합니다.",
+      description: menu.description.trim() ? "" : "설명은 필수입니다.",
+    };
+    setErrors(newErrors);
+    return Object.values(newErrors).every((e) => e === "");
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!validate()) return;
+
     try {
       let imageUrl = "";
-
-      if (image) {
-        imageUrl = await uploadImage();
-      }
+      if (image) imageUrl = await uploadImage();
 
       const payload = {
         ...menu,
@@ -101,10 +121,11 @@ const MenuRegisterPage = () => {
           type="text"
           name="menuName"
           placeholder="메뉴 이름"
-          value={menu.name}
+          value={menu.menuName}
           onChange={handleInputChange}
-          required
         />
+        {errors.menuName && <p className="error">{errors.menuName}</p>}
+
         <input
           type="text"
           name="category"
@@ -112,23 +133,36 @@ const MenuRegisterPage = () => {
           value={menu.category}
           onChange={handleInputChange}
         />
+        {errors.category && <p className="error">{errors.category}</p>}
+
         <input
           type="number"
           name="price"
           placeholder="가격"
           value={menu.price}
           onChange={handleInputChange}
-          required
         />
+        {errors.price && <p className="error">{errors.price}</p>}
+
         <input
           type="number"
-          name="calories"
+          name="calorie"
           placeholder="칼로리"
-          value={menu.calories}
+          value={menu.calorie}
           onChange={handleInputChange}
         />
+        {errors.calorie && <p className="error">{errors.calorie}</p>}
 
-        {/* ✅ 재료 입력 */}
+        <input
+          type="text"
+          name="description"
+          placeholder="설명"
+          value={menu.description}
+          onChange={handleInputChange}
+        />
+        {errors.description && <p className="error">{errors.description}</p>}
+
+        {/* 재료 입력 */}
         <div className="ingredient-input-group">
           <input
             type="text"
@@ -145,7 +179,7 @@ const MenuRegisterPage = () => {
           </button>
         </div>
 
-        {/* ✅ 재료 목록 */}
+        {/* 재료 목록 */}
         <div className="ingredient-list">
           {ingredientList.map((item, index) => (
             <span key={index} className="ingredient-item">
